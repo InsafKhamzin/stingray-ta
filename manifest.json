@@ -1,0 +1,20 @@
+{
+    "name": "StingrayTA",
+    "description": "Util extension that help charting faster",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "run_at": "document_idle",
+            "matches": [
+                "https://www.tradingview.com/chart/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ]
+}
