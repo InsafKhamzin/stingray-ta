@@ -1,16 +1,24 @@
-//hotkeys listener for changing timeframes
+//hotkeys listener 
 window.addEventListener('keypress', function (key) {
-    if (key.repeat) { return }
+    if (key.ctrlKey !== true || key.repeat) { return }
 
-    if (key.ctrlKey === true && key.code === 'KeyA') {
-        switchTf(true)
+    switch (key.code) {
+        case 'KeyA':
+            switchTf(true)
+            break
+        case 'KeyD':
+            switchTf(false)
+            break
+        case 'KeyW':
+            pickFavTool('FavoriteToolbarLineToolRay')
+            break
+        case 'KeyS':
+            pickFavTool('FavoriteToolbarLineToolHorzRay')
+            break
     }
-    if (key.ctrlKey === true && key.code === 'KeyD') {
-        switchTf(false)
-    }
-
 })
 
+//changes timeframes
 function switchTf(left) {
     const intervalHeader = document.getElementById('header-toolbar-intervals')
     if (!intervalHeader) {
@@ -33,4 +41,9 @@ function switchTf(left) {
         }
         break
     }
+}
+
+function pickFavTool(toolName) {
+    const tool = document.querySelectorAll(`[data-name="${toolName}"]`);
+    tool[0].click()
 }
