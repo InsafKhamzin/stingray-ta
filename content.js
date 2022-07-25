@@ -1,5 +1,9 @@
+const ToolRay = 'FavoriteToolbarLineToolRay'
+const ToolHorzRay = 'FavoriteToolbarLineToolHorzRay'
+
+
 //hotkeys listener 
-window.addEventListener('keypress', function (key) {
+window.addEventListener('keypress', (key) => {
     if (key.ctrlKey !== true || key.repeat) { return }
 
     switch (key.code) {
@@ -10,10 +14,10 @@ window.addEventListener('keypress', function (key) {
             switchTf(false)
             break
         case 'KeyW':
-            pickFavTool('FavoriteToolbarLineToolRay')
+            pickFavTool(ToolRay)
             break
         case 'KeyS':
-            pickFavTool('FavoriteToolbarLineToolHorzRay')
+            pickFavTool(ToolHorzRay)
             break
     }
 })
@@ -26,9 +30,6 @@ function switchTf(left) {
     }
 
     const timeframes = intervalHeader.childNodes
-    if (timeframes.childNodes === 0) {
-        return
-    }
 
     for (let i = 0; i < timeframes.length - 1; i++) {
         const tfClassName = timeframes[i].className
@@ -46,4 +47,64 @@ function switchTf(left) {
 function pickFavTool(toolName) {
     const tool = document.querySelectorAll(`[data-name="${toolName}"]`);
     tool[0].click()
+}
+
+
+const chartUi = document.getElementsByClassName('layout__area--center')[0];
+
+//mouse click listener
+chartUi.addEventListener('mousedown', function (event) {
+    const templates = document.querySelectorAll(`[data-name="templates"]`)[0];
+
+    if (!templates) {
+        return
+    }
+    templates.click()
+
+    const templatesSelect = document.getElementById('overlap-manager-root')
+    if (templatesSelect.childNodes.length === 0) {
+        return
+    }
+    const intervalHeader = document.getElementById('header-toolbar-intervals')
+    const activeTf = Object.values(intervalHeader.childNodes).filter(tf => tf.className.includes('isActive'))[0]
+    const activeTfValue = mapTf(activeTf.getAttribute('data-value'));
+    if (activeTfValue === ''){
+        return
+    }
+
+    // TODO remove timeout
+    setTimeout(() => {
+        const templatesTfs = templatesSelect.getElementsByClassName('label-tPYeYcJa');
+        Object.values(templatesTfs).forEach(tf => {
+            if(tf.innerHTML === activeTfValue){
+                tf.click()
+            }
+        })
+    }, 0);
+
+})
+
+function mapTf(tf) {
+    switch (tf) {
+        case '1':
+            return '1m'
+        case '3':
+            return '3m'
+        case '5':
+            return '5m'
+        case '15':
+            return '15m'
+        case '60':
+            return '1h'
+        case '240':
+            return '4h'
+        case '1D':
+            return 'D'
+        case '1W':
+            return 'W'
+        case '1M':
+            return 'M'
+        default:
+            return ''
+    }
 }
