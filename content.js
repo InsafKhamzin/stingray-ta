@@ -1,6 +1,8 @@
 const ToolRay = 'FavoriteToolbarLineToolRay'
 const ToolHorzRay = 'FavoriteToolbarLineToolHorzRay'
 
+let rayClicked = false
+let horzRayClicked = false
 
 //hotkeys listener 
 window.addEventListener('keypress', (key) => {
@@ -45,16 +47,20 @@ function switchTf(left) {
 }
 
 function pickFavTool(toolName) {
-    const tool = document.querySelectorAll(`[data-name="${toolName}"]`);
+    const tool = document.querySelectorAll(`[data-name="${toolName}"]`)
     tool[0].click()
 }
 
-
-const chartUi = document.getElementsByClassName('layout__area--center')[0];
+const chartUi = document.getElementsByClassName('layout__area--center')[0]
 
 //mouse click listener
 chartUi.addEventListener('mousedown', function (event) {
-    const templates = document.querySelectorAll(`[data-name="templates"]`)[0];
+
+    if (rayClicked === false && horzRayClicked === false){
+        return
+    }
+
+    const templates = document.querySelectorAll(`[data-name="templates"]`)[0]
 
     if (!templates) {
         return
@@ -68,16 +74,18 @@ chartUi.addEventListener('mousedown', function (event) {
     const intervalHeader = document.getElementById('header-toolbar-intervals')
     const activeTf = Object.values(intervalHeader.childNodes).filter(tf => tf.className.includes('isActive'))[0]
     const activeTfValue = mapTf(activeTf.getAttribute('data-value'));
-    if (activeTfValue === ''){
+    if (activeTfValue === '') {
         return
     }
 
     // TODO remove timeout
     setTimeout(() => {
-        const templatesTfs = templatesSelect.getElementsByClassName('label-tPYeYcJa');
+        const templatesTfs = templatesSelect.getElementsByClassName('label-tPYeYcJa')
         Object.values(templatesTfs).forEach(tf => {
-            if(tf.innerHTML === activeTfValue){
+            if (tf.innerHTML === activeTfValue) {
                 tf.click()
+                rayClicked = false
+                horzRayClicked = false
             }
         })
     }, 0);
@@ -107,4 +115,38 @@ function mapTf(tf) {
         default:
             return ''
     }
+}
+
+waitForElementToLoad(`[data-name="${ToolRay}"]`).then((elm) => {
+    elm.addEventListener('click', function (e) {
+        rayClicked = true
+    })
+});
+
+waitForElementToLoad(`[data-name="${ToolHorzRay}"]`).then((elm) => {
+    elm.addEventListener('click', function (e) {
+        horzRayClicked = true
+    })
+});
+
+
+//helper function for observing element to appear in DOM
+function waitForElementToLoad(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        }
+
+        const observer = new MutationObserver((mutations) => {
+            if (document.querySelector(selector)) {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
 }
