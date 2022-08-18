@@ -80,7 +80,8 @@ chartUi.addEventListener('mousedown', function (event) {
 
     // TODO remove timeout
     setTimeout(() => {
-        const templatesTfs = templatesSelect.getElementsByClassName('label-tPYeYcJa')
+        const templatesTfs = templatesSelect.getElementsByClassName('label-TJfoMVPe') //TODO 
+        console.log(templatesTfs)
         Object.values(templatesTfs).forEach(tf => {
             if (tf.innerHTML === activeTfValue) {
                 tf.click()
